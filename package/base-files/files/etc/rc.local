@@ -1,4 +1,17 @@
 # Put your custom commands here that should be executed once
 # the system init finished. By default this file does nothing.
 
+LOG
+
+if [ -e /etc/run_config.sh ]
+then
+	/etc/run_config.sh
+	rm /etc/run_config.sh
+fi
+
+insmod i2c-dev
+insmod i2c-gpio-custom bus0=0,18,19
+echo ds1307 0x68 > '/sys/class/i2c-dev/i2c-0/device/new_device'
+hwclock -s
+
 exit 0

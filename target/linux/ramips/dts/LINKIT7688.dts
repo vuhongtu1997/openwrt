@@ -42,6 +42,22 @@
 			label = "linkit-smart-7688:orange:wifi";
 			gpios = <&gpio1 12 GPIO_ACTIVE_LOW>;
 		};
+		led_internet: internet {
+			label = "linkit-smart-7688:orange:internet";
+			gpios = <&gpio0 19 GPIO_ACTIVE_LOW>;
+		};
+		led_service: service {
+			label = "linkit-smart-7688:orange:service";
+			gpios = <&gpio0 18 GPIO_ACTIVE_LOW>;
+		};
+		led_ble1: ble1 {
+			label = "linkit-smart-7688:orange:ble1";
+			gpios = <&gpio0 15 GPIO_ACTIVE_LOW>;
+		};
+		led_ble2: ble2 {
+			label = "linkit-smart-7688:orange:ble2";
+			gpios = <&gpio0 16 GPIO_ACTIVE_LOW>;
+		};
 	};
 
 	keys {

@@ -1,0 +1,27 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+
+start() {
+	if [ -e /etc/checkled ]
+	then
+		echo "HC is running mode test" > /dev/console
+	else	
+		ntpd -q -p 1.openwrt.pool.ntp.org
+		while [ 1 ]
+		do
+			ping -c5 www.google.com
+			status=$?
+			if [ $status -eq 0 ]
+			then
+				#echo "HC is connneting to the Internet" > /dev/console
+				/bin/echo "1" > /sys/class/leds/linkit-smart-7688:orange:internet/brightness
+				
+			else
+				#echo "HC is not connecting to the Internet" > /dev/console
+				/bin/echo "0" > /sys/class/leds/linkit-smart-7688:orange:internet/brightness
+			fi
+			sleep 25
+		done
+	fi
+}
