@@ -3,20 +3,6 @@
 Count=0
 ModeTest=0
 
-if [ -e /etc/checkled ] && [ ! -e /etc/run_config.sh ]
-then
-	ModeTest=1
-	/bin/echo "1" > /sys/class/leds/linkit-smart-7688:orange:internet/brightness
-	/bin/echo "1" > /sys/class/leds/linkit-smart-7688:orange:service/brightness
-	if [ -e /sys/bus/i2c/devices/i2c-0/0-0068/rtc/rtc0/date ]
-	then
-		/bin/echo "1" > /sys/class/leds/linkit-smart-7688:orange:ble2/brightness
-	else
-		/bin/echo "0" > /sys/class/leds/linkit-smart-7688:orange:ble2/brightness
-	fi
-	/bin/echo "1" > /sys/class/leds/linkit-smart-7688:orange:ble1/brightness
-fi
-
 Q=$(ps | grep 'SYSTEM' | grep -v "grep" | wc -l)
 if [ $Q == 1 ]
 then
@@ -29,8 +15,7 @@ then
 		echo "SYSTEM is not running"
 		SYSTEM &
 	else
-		CREATE_DB &
-		sleep 30
+		CREATE_DB 
 		SYSTEM &
 	fi
 fi
@@ -47,8 +32,7 @@ then
 	        echo "RD_SMART is not running"
 	        RD_SMART &
 	else
-	        CREATE_DB &
-	        sleep 30
+	        CREATE_DB
 	        RD_SMART &
 	fi
 fi
@@ -90,4 +74,19 @@ then
 	else
 		/bin/echo "0" > /sys/class/leds/linkit-smart-7688:orange:ble1/brightness
 	fi
+fi
+
+
+if [ -e /etc/checkled ] && [ ! -e /etc/run_config.sh ]
+then
+	ModeTest=1
+	/bin/echo "1" > /sys/class/leds/linkit-smart-7688:orange:internet/brightness
+	/bin/echo "1" > /sys/class/leds/linkit-smart-7688:orange:service/brightness
+	if [ -e /sys/bus/i2c/devices/i2c-0/0-0068/rtc/rtc0/date ]
+	then
+		/bin/echo "1" > /sys/class/leds/linkit-smart-7688:orange:ble2/brightness
+	else
+		/bin/echo "0" > /sys/class/leds/linkit-smart-7688:orange:ble2/brightness
+	fi
+	/bin/echo "1" > /sys/class/leds/linkit-smart-7688:orange:ble1/brightness
 fi

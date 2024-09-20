@@ -1,0 +1,8 @@
+config server
+	option host 'iot.rangdong.com.vn'
+	option port '1883'
+	option client_id ''
+	option username ''
+	option password ''
+	option keep_alive '10'
+

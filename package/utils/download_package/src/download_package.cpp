@@ -82,20 +82,12 @@ void openfile(char const *command){
 }
 
 int ping(){
-	openfile("CREATE_DB");
 	openfile("ping -c3 www.google.com");
 	size_t found = msg_rsp.find("0% packet loss");
 	if(found != string::npos){
 		openfile("hwclock -w");
-		openfile("/etc/download_package.sh");
-		openfile("/etc/check_download");
-		found = msg_rsp.find("download done");
-		if(found != string::npos){
-			openfile("rm /etc/check_download");
-			return 1;
-		}
-		else
-			return 0;
+		openfile("rm /etc/check_download");
+		return 1;
 	}
 	else{
 		return 0;

@@ -947,6 +947,30 @@ bool CheckIntoHome(const char *msg)
 	return check;
 }
 
+bool CheckScanDevice()
+{
+	FILE *file;
+	bool check = false;
+	char temp[100] = {0};
+	file = fopen("/etc/scanDevice", "a+");
+	if (!file)
+	{
+		check = false;
+	}
+	else
+	{
+		cout << "File is open" << endl;
+	}
+	fgets(temp, 100, file);
+	cout << temp[0] << endl;
+	if (temp[0]=='1')
+	{
+		check = true;
+	}
+	fclose(file);
+	return check;
+}
+
 void GetVersionHC(char *Version)
 {
 	FILE *file;
@@ -1484,7 +1508,7 @@ void ProcessUDPMsg()
 					ENCRYPTION = encryption.c_str();
 					ConnectToWifi();
 				}
-				if (document1.HasMember("cmd"))
+				if (document1.HasMember("cmd") && CheckScanDevice())
 				{
 					string cmd = document1["cmd"].GetString();
 					string rqi = document1["rqi"].GetString();

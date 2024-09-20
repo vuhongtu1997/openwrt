@@ -9,11 +9,13 @@ endif
 
 LINKEDLIBS = -lsqlite3 # Librarys to include in the link
 
-DEVICESRC += $(wildcard src/*.c)
+DEVICPPESRC += $(wildcard src/*.cpp)
 
-CPPSRC = $(wildcard *.) $(DEVICESRC)
-CPPOBJ = $(CPPSRC:.c=$(OBJEXT))
-BUILTOBJ = $(addprefix $(BUILD_PATH)/,$(CPPOBJ))
+CPPSRC = $(wildcard *.cpp) $(DEVICPPESRC)
+CPPOBJ = $(DEVICPPESRC:.cpp=$(OBJEXT))
+CSRC = $(wildcard *.c) $(DEVICESRC)
+COBJ = $(DEVICESRC:.c=$(OBJEXT))
+BUILTOBJ = $(addprefix $(BUILD_PATH)/,$(CPPOBJ) $(COBJ))
 
 APP = RESET_BLE
 
@@ -23,7 +25,11 @@ all: $(APP)
 
 $(APP): $(BUILTOBJ)
 	$(CXX) $(LINKFLAGS) -o $@ $(BUILTOBJ) $(LINKEDLIBS)
-
+	
+$(BUILD_PATH)/%.o: %.cpp
+	mkdir -p $(@D)
+	$(CXX) $(COMPFLAGS) $(INCLUDES) -c $< -o $@
+	
 $(BUILD_PATH)/%.o: %.c
 	mkdir -p $(@D)
 	$(CC) $(COMPFLAGS) $(INCLUDES) -c $< -o $@

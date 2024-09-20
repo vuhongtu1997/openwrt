@@ -13,6 +13,8 @@ import re
 import uuid
 import time
 import os
+import sys
+import signal
 
 
 def time_split(time: datetime.datetime):
@@ -37,27 +39,29 @@ def ping_google():
         r = rel3[0] == "0%"
     except:
         r = False
-        print("\033[0;101mCan not ping to Google")
+        print("Can not ping to Google")
     return r
 
 
 def eliminate_current_progress():
-    print(f"\033[0;33mThis program is killed now")
-    logging.debug("\033[0;103mThis Program is killed now")
-    s = execute_with_result(f"ps | grep python3")
-    dt = s[1].split(" ")
-    current_progress_port = ""
-    for i in range(len(dt)):
-        if dt[i] != "":
-            current_progress_port = dt[i]
-            break
+    print(f"This program is killed now")
+    logging.debug("This Program is killed now")
+    # s = execute_with_result(f"ps | grep python3")
+    # dt = s[1].split(" ")
+    # current_progress_port = ""
+    # for i in range(len(dt)):
+    #     if dt[i] != "":
+    #         current_progress_port = dt[i]
+    #         break
+    pid = os.getpid()
     os.system(
         '/bin/echo "0" > /sys/class/leds/linkit-smart-7688:orange:service/brightness'
     )
-    print(f"\033[0;33mKill -9 {current_progress_port}")
-    logging.debug(f"\033[0;33mKill -9 {current_progress_port}")
-    time.sleep(3)
-    execute(f"kill -9 {current_progress_port}")
+    os.kill(pid, signal.SIGTERM)
+    # print(f"Kill -9 {current_progress_port}")
+    # logging.debug(f"Kill -9 {current_progress_port}")
+    # execute(f"kill -9 {current_progress_port}")
+    sys.exit()
 
 
 def check_and_kill_all_repeat_progress():
@@ -73,7 +77,8 @@ def check_and_kill_all_repeat_progress():
     if len(current_self_repeat_process_list_port) > 1:
         kill_all_cmd = "kill -9"
         for i in range(len(current_self_repeat_process_list_port)):
-            kill_all_cmd = kill_all_cmd + " " + current_self_repeat_process_list_port[i]
+            kill_all_cmd = kill_all_cmd + " " + \
+                current_self_repeat_process_list_port[i]
         execute(kill_all_cmd)
 
 
@@ -90,11 +95,13 @@ class System:
         dt = s[1].split("\n")
         if str(dt[0]).find("RD_HC") == -1:
             wifi_name_started_point = str(dt[0]).find('"') + 1
-            wifi_name_ended_point = str(dt[0]).find('"', wifi_name_started_point) - 1
+            wifi_name_ended_point = str(dt[0]).find(
+                '"', wifi_name_started_point) - 1
             self.__globalVariables.CurrentWifiName = str(dt[0])[
-                wifi_name_started_point : wifi_name_ended_point + 1
+                wifi_name_started_point: wifi_name_ended_point + 1
             ]
-            print(f"\033[0;34mWifi          \t\t {self.__globalVariables.CurrentWifiName}")
+            print(
+                f"Wifi          \t\t {self.__globalVariables.CurrentWifiName}")
             self.__logger.info(
                 f"Wifi: {self.__globalVariables.CurrentWifiName}"
             )
@@ -105,16 +112,18 @@ class System:
         wifi_name = ""
         if str(dt[0]).find("RD_HC") == -1:
             wifi_name_started_point = str(dt[0]).find('"') + 1
-            wifi_name_ended_point = str(dt[0]).find('"', wifi_name_started_point) - 1
-            wifi_name = str(dt[0])[wifi_name_started_point : wifi_name_ended_point + 1]
+            wifi_name_ended_point = str(dt[0]).find(
+                '"', wifi_name_started_point) - 1
+            wifi_name = str(dt[0])[
+                wifi_name_started_point: wifi_name_ended_point + 1]
         if wifi_name != "" and wifi_name != self.__globalVariables.CurrentWifiName:
             self.__logger.info(
                 f"Current Wifi Change From {self.__globalVariables.CurrentWifiName} To {wifi_name}"
             )
             print(
-                f"\033[0;3mCurrent Wifi Change From {self.__globalVariables.CurrentWifiName} To {wifi_name}"
+                f"Current Wifi Change From {self.__globalVariables.CurrentWifiName} To {wifi_name}"
             )
-            print(f"\033[0;33mCheck Wifi Change ???")
+            print(f"Check Wifi Change ???")
             eliminate_current_progress()
             # self.__globalVariables.SignalrConnectSuccessFlag = False
 
@@ -161,7 +170,7 @@ class System:
                 data=firmware_report_body_data,
             )
             self.__logger.info(f"Update firmware \t {res.json()}")
-            print(f"\033[0;33mUpdate firmware \t {res.json()}")
+            print(f"Update firmware \t {res.json()}")
         except:
             self.__logger.error(f"Can Not Update Firmware Info")
             pass
@@ -179,10 +188,10 @@ class System:
             res = h.post(url=heartbeat_url, headers=headers, data=payload)
             data = res.json()
             self.__logger.info(f"Ping Cloud Status: {data}")
-            print(f"\033[0;33mPing Cloud Status: {data}")
+            print(f"Ping Cloud Status: {data}")
             return data
         except:
-            print(f"\033[0;31mCan Not Ping To Cloud")
+            print(f"Can Not Ping To Cloud")
             self.__logger.debug(f"Can Not Ping To Cloud")
             return False
 
@@ -195,7 +204,8 @@ class System:
         headers = h.create_new_http_header(
             cookie=cookie, domitory_id=self.__globalVariables.DormitoryId
         )
-        payload = {"id": self.__globalVariables.HcId}
+        # payload = {"id": self.__globalVariables.HcId}
+        payload = {"macAddress": self.__globalVariables.GatewayMac}
         headers["Content-Type"] = "application/json"
         success = False
         name = ""
@@ -223,8 +233,9 @@ class System:
                         "Cookie": cookie,
                     }
                     return_data = h.post(url, headers=headers, data=payload)
-                    self.__logger.info(f"Auto update status \t {res.status_code}")
-                    print(f"\033[0;34mAuto update status \t {res.status_code}")
+                    self.__logger.info(
+                        f"Auto update status \t {res.status_code}")
+                    print(f"Auto update status \t {res.status_code}")
                     return_info = return_data.json()
                     if return_data.status_code == 200:
                         success = True

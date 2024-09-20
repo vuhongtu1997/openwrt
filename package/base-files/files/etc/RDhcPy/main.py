@@ -17,7 +17,8 @@ d = os.path.dirname(__file__)
 loghandler = TimedRotatingFileHandler(
     filename=d + "/Logging/runtime.log", when="MIDNIGHT", backupCount=4
 )
-logfomatter = logging.Formatter(fmt=("%(asctime)s\t" "%(levelname)s\t" "%(message)s"))
+logfomatter = logging.Formatter(
+    fmt=("%(asctime)s\t" "%(levelname)s\t" "%(message)s"))
 logger = logging.getLogger("mylog")
 loghandler.setFormatter(logfomatter)
 logger.addHandler(loghandler)
@@ -60,7 +61,7 @@ def thread_6():
 
 
 def main():
-    print("\033[0;32mService start! <---")
+    print("Service start! <---")
     logger.info("Service start!")
     db.init()
     mqtt.connect()

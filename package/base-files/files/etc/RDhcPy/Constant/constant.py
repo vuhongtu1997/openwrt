@@ -1,13 +1,16 @@
 HttpStatusCodeOk = 200
 
 # Cloud generic information
+
 # SERVER_HOST = "https://iot-dev.truesight.asia"
 # SERVER_SIGNALR_HOST = "https://iot-dev.truesight.asia"
-SERVER_HOST = "https://rallismartv2.rangdong.com.vn"
-SERVER_SIGNALR_HOST = "https://rallismart-ebe.rangdong.com.vn"
 
 # SERVER_HOST = "https://rallismartv2-staging.rangdong.com.vn"
 # SERVER_SIGNALR_HOST = "https://rallismartv2-staging.rangdong.com.vn"
+
+SERVER_HOST = "https://rallismartv2.rangdong.com.vn"
+SERVER_SIGNALR_HOST = "https://rallismart-ebe.rangdong.com.vn"
+
 
 # SignalR connection option
 SIGNALR_SERVER_URL = "/rpc/iot-ebe/signalr/sync"

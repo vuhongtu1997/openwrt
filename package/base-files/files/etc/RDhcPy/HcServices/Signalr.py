@@ -31,7 +31,7 @@ def get_token():
         headers["Cookie"] = "Token={token}".format(token=token)
         return token
     except Exception as e:
-        print(f"\033[0;31mException While Getting SignalR Token: {e}")
+        print(f"Exception While Getting SignalR Token: {e}")
         logging.Logger.error(f"Exception While Getting SignalR Token: {e}")
         return None
 
@@ -109,7 +109,7 @@ class Signalr(ITransport):
                 time.sleep(2)
                 self.__hub.send("Send", [destination, entity, message])
             except:
-                print("\033[0;31mCan Not Send Data To Cloud")
+                print("Can Not Send Data To Cloud")
                 self.__logger.error("Can Not Send Data To Cloud")
                 self.__globalVariables.SignalrConnectSuccessFlag = False
 
@@ -124,7 +124,7 @@ class Signalr(ITransport):
                     if self.__hub is not None:
                         self.__hub.stop()
                         self.__hub = None
-                        print("\033[0;33mClear SignalR Connect")
+                        print("Clear SignalR Connect")
                         self.__logger.info("Clear SignalR Connect")
                     self.__build_connection()
                     connect_success = self.__hub.start()
@@ -140,8 +140,8 @@ class Signalr(ITransport):
                         self.receive_command_data_queue.put(data)
                         time.sleep(1)
                         msg = {
-                            "CMD":"HC_CONNECT_TO_CLOUD_CONFIRM",
-                            "SUCCESS":True}
+                            "CMD": "HC_CONNECT_TO_CLOUD_CONFIRM",
+                            "SUCCESS": True}
 
                         data_test = [
                             self.__globalVariables.DormitoryId,
@@ -154,7 +154,7 @@ class Signalr(ITransport):
                         f"Exception While Connecting Signalr to Server: {err}"
                     )
                     print(
-                        f"\033[0;31mException While Connecting Signalr to Server: {err}"
+                        f"Exception While Connecting Signalr to Server: {err}"
                     )
                     eliminate_current_progress()
             await asyncio.sleep(10)
@@ -163,7 +163,7 @@ class Signalr(ITransport):
         os.system(
             '/bin/echo "0" > /sys/class/leds/linkit-smart-7688:orange:service/brightness'
         )
-        print("\033[0;31mSignalr Disconnected")
+        print("Signalr Disconnected")
         self.__logger.debug("Signalr Disconnected")
         self.__globalVariables.SignalrConnectSuccessFlag = False
         time.sleep(2)

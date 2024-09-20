@@ -134,6 +134,8 @@ UUID="$ID1$SUBID$ID2$SUBID$ID3$SUBID$ID4$SUBID$ID5"
 echo "$UUID" >> /etc/HomeControllerId.txt
 mv /etc/RDhcPy /root
 mv /etc/run.sh /root
+mv /etc/signalrcore/* /usr/lib/python3.7/site-packages/
+mv /etc/rd.Sqlite /root
 touch /etc/crontabs/root
 echo -e "*/1 * * * * /root/run.sh">> /etc/crontabs/root
 echo -e "0 8 * * * LOG">> /etc/crontabs/root

@@ -9,6 +9,10 @@ then
 	rm /etc/run_config.sh
 fi
 
+echo "1" > /sys/class/gpio/export
+echo "out" > /sys/class/gpio/gpio1/direction
+echo "1" > /sys/class/gpio/gpio1/value
+
 insmod i2c-dev
 insmod i2c-gpio-custom bus0=0,18,19
 echo ds1307 0x68 > '/sys/class/i2c-dev/i2c-0/device/new_device'

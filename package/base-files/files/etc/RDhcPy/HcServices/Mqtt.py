@@ -71,7 +71,8 @@ class Mqtt(ITransport):
 
     def send(self, destination, send_data):
         try:
-            self.__client.publish(destination, payload=send_data, qos=const.MQTT_QOS)
+            self.__client.publish(
+                destination, payload=send_data, qos=const.MQTT_QOS)
         except Exception as e:
             self.__client.reconnect()
 
@@ -100,7 +101,7 @@ class Mqtt(ITransport):
             self.__client.loop_start()
         except Exception as err:
             self.__logger.error(f"Exception While Connecting MQTT: {err}")
-            print(f"\033[0;31mException While Connecting Connect MQTT: {err}")
+            print(f"Exception While Connecting Connect MQTT: {err}")
 
     def reconnect(self):
         pass

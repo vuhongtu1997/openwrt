@@ -56,9 +56,7 @@ class MqttDataHandler(IHandler):
         return
 
     def __handler_topic_hc_control(self, data):
-        print(f"\033[0;106mSignalR >> MQTT : HC.CONTROL :\n\033[0;30m{data}\n")
-        self.__logger.info(
-            f"\033[0;106mSignalR >> MQTT : HC.CONTROL :\n\033[0;30m{data}\n")
+        print(f"SignalR >> MQTT : HC.CONTROL :\n{data}\n")
         try:
             json_data = json.loads(data)
             cmd = json_data.get("CMD", "")
@@ -81,9 +79,7 @@ class MqttDataHandler(IHandler):
         if self.__globalVariables.AllowChangeCloudAccountFlag:
             return
         print(
-            f"\033[0;105mRD_SMART >> MQTT : HC.CONTROL.RESPONSE :\n\033[0;30m{data}\n")
-        self.__logger.info(
-            f"\033[0;105mRD_SMART >> MQTT : HC.CONTROL.RESPONSE :\n\033[0;30m{data}\n")
+            f"RD_SMART >> MQTT : HC.CONTROL.RESPONSE :\n{data}\n")
         if self.__globalVariables.SignalrConnectSuccessFlag:
             try:
                 json_data = json.loads(data)
@@ -120,7 +116,7 @@ class MqttDataHandler(IHandler):
                     signal_data.append(data_send_to_cloud)
         except:
             self.__logger.error("\nData Attached With Device CMD Invalid")
-            print("\033[0;31mData Attached With Device CMD Invalid")
+            print("Data Attached With Device CMD Invalid")
             return
 
         if signal_data:
@@ -141,11 +137,12 @@ class MqttDataHandler(IHandler):
 
     def __handler_cmd_hc_connect_to_cloud(self, data):
         db = Db()
-        dormitory_id = data.get("DORMITORY_ID", "")
         refresh_token = data.get("REFRESH_TOKEN", "")
+        dormitory_id = data.get("DORMITORY_ID", "")
+        if self.__globalVariables.DormitoryId == "":
+            self.__globalVariables.DormitoryId = dormitory_id
         longitude = data.get("LONGITUDE")
         latitude = data.get("LATITUDE")
-        hc_id = data.get("HC_ID")
         msg = {
             "CMD": "HC_CONNECT_TO_CLOUD",
             "DATA": {
@@ -153,18 +150,18 @@ class MqttDataHandler(IHandler):
             }
         }
         self.__mqtt.send(const.MQTT_RESPONSE_TOPIC, json.dumps(msg))
-        if refresh_token is not None or refresh_token != "":
+        if refresh_token is not None or refresh_token != "" or refresh_token != self.__globalVariables.RefreshToken:
+            self.__globalVariables.SignalrConnectSuccessFlag = False
             self.__globalVariables.RefreshToken = refresh_token
         else:
             return
-        self.__globalVariables.DormitoryId = dormitory_id
         self.__globalVariables.AllowChangeCloudAccountFlag = False
         if self.__globalVariables.SignalrConnectSuccessFlag:
             return
         self.__globalVariables.SignalrConnectSuccessFlag = False
         user_data = userData(
             refreshToken=self.__globalVariables.RefreshToken,
-            dormitoryId=dormitory_id,
+            dormitoryId=self.__globalVariables.DormitoryId,
             allowChangeAccount=False,
         )
         rel = db.Services.UserdataServices.FindUserDataById(id=1)
@@ -185,7 +182,7 @@ class MqttDataHandler(IHandler):
             return
 
     def __handler_cmd_reset_hc(self, data):
-        print("\033[0;33mAllow To Change Account. Now New Account Can Log In")
+        print("Allow To Change Account. Now New Account Can Log In")
         self.__logger.info(
             "Allow To Change Account. Now New Account Can Log In")
 
@@ -252,7 +249,7 @@ class MqttDataHandler(IHandler):
                 except:
                     self.__logger.error(
                         "\nData Attached With Device CMD Invalid")
-                    print("\033[0;31mData Attached With Device CMD Invalid")
+                    print("Data Attached With Device CMD Invalid")
                     return
 
                 if signalr_data:
@@ -286,7 +283,7 @@ class MqttDataHandler(IHandler):
                     signal_data.append(data_send_to_cloud)
         except:
             self.__logger.error("\nData Attached With Device CMD Invalid")
-            print("\033[0;31mData Attached With Device CMD Invalid")
+            print("Data Attached With Device CMD Invalid")
             return
 
         if signal_data:
@@ -320,8 +317,8 @@ class MqttDataHandler(IHandler):
             if mac != self.__globalVariables.GatewayMac:
                 return
         data = cmd.get("DATA", "")
-        print("\033[0;32mStart Update Firmware")
-        self.__logger.info("Start Update Firmware")
+        print("Start update firmware")
+        self.__logger.info("Start update firmware")
         os.system("rm /root/*.xz")
         try:
             os.system("opkg update")
@@ -421,7 +418,7 @@ class MqttDataHandler(IHandler):
                                     os.system(f"mv /root/{req_ver}/* /root/")
                                     os.system(f"rm -r /root/{req_ver}/")
 
-                                    # install new file\
+                                    # install new file
                                     os.system("opkg install /root/*.ipk")
 
                                     # delete /etc/RECOVERY
@@ -433,12 +430,13 @@ class MqttDataHandler(IHandler):
                                     os.system("chmod +x /root/config.sh")
                                     os.system("/root/config.sh")
                                     os.system("rm /root/config.sh")
-
+                                    os.system("rm /root/*.ipk")
+                                    os.system("rm /root/version.txt")
                     time.sleep(4)
                     os.system("reboot -f")
         except:
-            print("\033[0;31mCan Not Update Firmware")
-            self.__logger.error("Can Not Update Firmware")
+            print("Can Not Update Firmware")
+            self.__logger.error("Can not update firmware")
 
     def __handler_cmd_auto_update(self, data):
         file = open("/etc/version.txt", "r")
@@ -479,7 +477,7 @@ class MqttDataHandler(IHandler):
                     f"Get Auto Update Firmware: {return_data.status_code}"
                 )
                 print(
-                    f"\033[0;32mAuto update firmware \t {return_data.status_code}")
+                    f"Auto update firmware \t {return_data.status_code}")
                 return_info = return_data.json()
                 cmd = []
                 if return_info["version"] == current_ver:
@@ -545,7 +543,7 @@ class MqttDataHandler(IHandler):
             )
             self.__logger.info(
                 f"Uploaded Database To Server : {res.status_code}")
-            print(f"\033[0;33mUploaded Database To Server: {res.json()}")
+            print(f"Uploaded Database To Server: {res.json()}")
             info = res.json()
             url = info["url"]
             size = info["size"]
@@ -593,7 +591,7 @@ class MqttDataHandler(IHandler):
             if response.status_code == 200:
                 response_code = True
         except Exception as e:
-            print(f"\033[0;33mException Create Backup Data: {e}")
+            print(f"Exception Create Backup Data: {e}")
             self.__logger.error(f"Exception Create Backup Data: {e}")
         return response_code
 
@@ -617,17 +615,17 @@ class MqttDataHandler(IHandler):
             msg = {"CMD": "BACKUP", "DATA": {"DIRECTORY": "/root/rd.Sqlite"}}
             self.__mqtt.send("RD_CONTROL", json.dumps(msg))
         except Exception as e:
-            print(f"\033[0;33mDownload Database Failure With Error: {e}")
-            self.__logger.error(f"Download Database Failure With Error: {e}")
+            print(f"Download Database Failure With Error: {e}")
+            self.__logger.error(f"Download database failure: {e}")
 
     def __handler_cmd_backup_response(self, data):
         if data.get("SUCCESS"):
             status = 1
-            print("\033[0;32mRestore Success")
+            print("Restore Success")
             self.__logger.info("Restore Success")
         else:
             status = 0
-            print("\033[0;33mRestore Failure")
+            print("Restore Failure")
             self.__logger.info("Restore Failure")
         cmd = {
             "CMD": "HC_RESTORE_DATA",

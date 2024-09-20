@@ -24,10 +24,12 @@ DEVICPPESRC += $(wildcard src/RD/GHA/JSON/*.cpp)
 DEVICPPESRC += $(wildcard src/RD/GHA/JSON/GHA_RSP_CONTROL/*.cpp)
 DEVICPPESRC += $(wildcard src/RD/GHA/JSON/GHA_RSP_REMOTE/*.cpp)
 DEVICPPESRC += $(wildcard src/RD/GHA/JSON/GHA_RSP_SENSOR/*.cpp)
+DEVICPPESRC += $(wildcard src/RD/GHA/JSON/GHA_RSP_AIBOX/*.cpp)
 DEVICPPESRC += $(wildcard src/RD/MQTT/*.cpp)
 DEVICPPESRC += $(wildcard src/RD/TIMER/*.cpp)
 DEVICPPESRC += $(wildcard src/RD/DVSTATUS/*.cpp)
 DEVICPPESRC += $(wildcard src/RD/SCENEDELAY/*.cpp)
+DEVICPPESRC += $(wildcard src/RD/UDP/*.cpp)
 
 
 CPPSRC = $(wildcard *.cpp) $(DEVICPPESRC)

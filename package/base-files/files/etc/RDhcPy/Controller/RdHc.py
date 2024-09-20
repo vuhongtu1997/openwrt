@@ -90,7 +90,7 @@ class RdHc:
             try:
                 self.__signalServices.send_response_data_queue.put(send_data)
                 print(
-                    f"\033[0;107mHC >> Cloud : PING                                                                              \n")
+                    f"HC >> Cloud : PING                                                                              \n")
             except:
                 pass
             await asyncio.sleep(Const.HC_REPORT_ONLINE_STATUS_INTERVAL)
@@ -108,9 +108,9 @@ class RdHc:
             ]
         self.__globalVariables.SignalrConnectSuccessFlag = False
         print(
-            f"\033[0;34mDormitoryId \t\t {self.__globalVariables.DormitoryId}")
+            f"DormitoryId \t\t {self.__globalVariables.DormitoryId}")
         print(
-            f"\033[0;34mRefreshToken \t\t {self.__globalVariables.RefreshToken}")
+            f"RefreshToken \t\t {self.__globalVariables.RefreshToken}")
 
     # load current wifi SSID
     def __hc_load_current_wifi_name(self):
@@ -121,7 +121,7 @@ class RdHc:
         mac = ":".join(re.findall("..", "%012x" % uuid.getnode()))
         self.__globalVariables.GatewayMac = mac
         print(
-            f"\033[0;34mMac Address    \t\t {self.__globalVariables.GatewayMac}")
+            f"Mac Address    \t\t {self.__globalVariables.GatewayMac}")
 
     def __hc_get_version(self):
         file = open("/etc/version.txt", "r")
@@ -129,7 +129,7 @@ class RdHc:
         file.close()
         self.__globalVariables.CurrentVersion = current_ver
         print(
-            f"\033[0;34mVersion    \t\t {self.__globalVariables.CurrentVersion}")
+            f"Version    \t\t {self.__globalVariables.CurrentVersion}")
 
     def __hc_get_id(self):
         output = os.popen(
@@ -148,7 +148,7 @@ class RdHc:
             + str_id[20:32]
         )
         self.__globalVariables.HcId = hc_id
-        print(f"\033[0;34mHC ID      \t\t {self.__globalVariables.HcId}")
+        print(f"HC ID      \t\t {self.__globalVariables.HcId}")
         self.__logger.info(f"Get HC ID: {self.__globalVariables.HcId}")
 
     # checking when wifi is changed
@@ -213,7 +213,7 @@ class RdHc:
     async def __hc_update_weather_status(self):
         while self.__globalVariables.PingGoogleSuccessFlag:
             try:
-                print("\033[0;33mUpdate Weather Info")
+                print("Update Weather Info")
                 self.__get_weather()
                 await asyncio.sleep(Const.HC_UPDATE_WEATHER_INTERVAL)
             except:
@@ -228,7 +228,7 @@ class RdHc:
                 self.__globalVariables.PingGoogleSuccessFlag
             )
             if self.__globalVariables.PingGoogleSuccessFlag:
-                print("\033[0;32mInternet status \t success")
+                print("Internet status \t success")
                 self.__logger.info("Internet Successfully !")
                 if not self.__globalVariables.CheckWeatherFlag:
                     self.__get_weather()
@@ -246,7 +246,7 @@ class RdHc:
                 s.update_firmware_version_info_to_cloud(self.__httpServices)
                 send_version_success_flag = True
             except Exception as e:
-                print(f"\033[0;31mError While Updating Firmware Version: {e}")
+                print(f"Error While Updating Firmware Version: {e}")
                 self.__logger.error(f"Error Updating Firmware Version: {e}")
                 pass
 
@@ -277,7 +277,7 @@ class RdHc:
                 else:
                     return
             except Exception as e:
-                print(f"\033[0;31mError While Updating Firmware Version: {e}")
+                print(f"Error While Updating Firmware Version: {e}")
                 self.__logger.error(f"Error Updating Firmware Version: {e}")
                 return
 

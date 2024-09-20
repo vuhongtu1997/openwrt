@@ -91,7 +91,7 @@ void WriteIntoPassWd_MQTT(string msg)
     char *filePath = new char[FilePath.length() + 1];
     strcpy(filePath, FilePath.c_str());
     char *Msg = new char[msg.length() + 1];
-    file = fopen(filePath, "a");
+    file = fopen(filePath, "w");
     strcpy(Msg, msg.c_str());
     fputs(Msg, file);
     fclose(file);
