@@ -37,6 +37,7 @@ class SignalrDataHandler(IHandler):
                 const.SIGNALR_APP_COMMAND_ENTITY: self.__handler_log_signalr_command,
                 const.SIGNALR_AUTO_UPDATE_FIRMWARE_ENTITY: self.__handler_signalr_auto_update_command,
                 const.SIGNALR_APP_DEVICE_RESPONSE_ENTITY: self.__handler_log_signalr_response,
+                const.HC_UPDATE_DEVICE_STATUS: self.__handler_log_signalr_response,
                 const.SIGNALR_APP_ROOM_RESPONSE_ENTITY: self.__handler_log_signalr_response,
                 const.SIGNALR_APP_SCENE_RESPONSE_ENTITY: self.__handler_log_signalr_response,
                 const.SIGNALR_CLOUD_RESPONSE_ENTITY: self.__handler_log_signalr_response,

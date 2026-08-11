@@ -14,6 +14,7 @@ import requests
 import subprocess
 import os
 import time
+from datetime import datetime, timezone
 
 
 def sql_update(cmd):
@@ -27,6 +28,18 @@ def sql_update(cmd):
 tokenTime = 0
 
 #   ==============================================================================================
+
+###
+# {
+#   "CMD": "NOTI",
+#   "DATA": {
+#     "DEVICE_ID": "0946a853-b4fc-2738-953f-2c976b926f65",
+#     "ATTRIBUTE_ID": 163,
+#     "VALUE": 1,
+#     "IMG": "jhfuhforelfhlr"
+#   }
+# }
+###
 
 
 class MqttDataHandler(IHandler):
@@ -64,7 +77,7 @@ class MqttDataHandler(IHandler):
             if (cmd == "UPDATE_FIRMWARE"):
                 self.__handler_cmd_update_firmware(json_data)
             switcher = {
-                "HC_CONNECT_TO_CLOUD": self.__handler_cmd_hc_connect_to_cloud,
+                # "HC_CONNECT_TO_CLOUD": self.__handler_cmd_hc_connect_to_cloud,
                 "RESET_HC": self.__handler_cmd_reset_hc,
                 "AUTO_UPDATE": self.__handler_cmd_auto_update,
                 "HC_BACKUP_DATA": self.__handler_cmd_backup_data,
@@ -83,21 +96,28 @@ class MqttDataHandler(IHandler):
         if self.__globalVariables.SignalrConnectSuccessFlag:
             try:
                 json_data = json.loads(data)
-                cmd = json_data.get("CMD", "")
-                dt = json_data.get("DATA", "")
-                self.__hc_check_cmd_and_send_response_to_cloud(cmd, data)
-                switcher = {
-                    "DEVICE": self.__handler_cmd_device,
-                    # "DEVICE_UPDATE_STATUS": self.__handler_cmd_device_status,
-                    "DEVICE_UPDATE": self.__handler_cmd_device,
-                    "BACKUP": self.__handler_cmd_backup_response,
-                    "DEVICE_LOG": self.__handler_cmd_device_log,
-                    "RULE_LOG": self.__handler_cmd_rule_log,
-                    "SCENE_LOG": self.__handler_cmd_scene_log,
-                    "GROUP_LOG": self.__handler_cmd_group_log,
-                }
-                func = switcher.get(cmd)
-                func(dt)
+                if ("cmd" in json_data):
+                    send_data = [
+                        const.SIGNALR_APP_RULE_RESPONSE_ENTITY,
+                        data,
+                    ]
+                    self.__signalr.send_response_data_queue.put(send_data)
+                else:
+                    cmd = json_data.get("CMD", "")
+                    dt = json_data.get("DATA", "")
+                    self.__hc_check_cmd_and_send_response_to_cloud(cmd, data)
+                    switcher = {
+                        "DEVICE": self.__handler_cmd_device,
+                        "DEVICE_UPDATE": self.__handler_cmd_device_update_status,
+                        "BACKUP": self.__handler_cmd_backup_response,
+                        "DEVICE_LOG": self.__handler_cmd_device_log,
+                        "RULE_LOG": self.__handler_cmd_rule_log,
+                        "SCENE_LOG": self.__handler_cmd_scene_log,
+                        "GROUP_LOG": self.__handler_cmd_group_log,
+                        "NOTI": self.__handler_cmd_device_aibox,
+                    }
+                    func = switcher.get(cmd)
+                    func(dt)
             except:
                 pass
 
@@ -129,6 +149,97 @@ class MqttDataHandler(IHandler):
             for i in range(len(element)):
                 send_data = [
                     const.SIGNALR_CLOUD_RESPONSE_ENTITY,
+                    json.dumps(element[i]),
+                ]
+                self.__signalr.send_response_data_queue.put(send_data)
+        else:
+            return
+
+    def __handler_cmd_device_aibox(self, data):
+        if self.__globalVariables.AllowChangeCloudAccountFlag:
+            return
+        try:
+            send_data = {
+                "id": data["DEVICE_ID"],
+                "type": 1,
+                "data": [
+                        {
+                            "attributeId": data["ATTRIBUTE_ID"],
+                            "value": data["VALUE"],
+                        }
+                    ]
+            }
+            if "IMG" in data:
+                send_data["data"]["img"] = data["IMG"]
+            try:
+                token = self.__get_token()
+                update_data_url = const.SERVER_HOST + const.HC_UPDATE_AIBOX_NOTI
+                headers = {
+                    "X-DormitoryId": self.__globalVariables.DormitoryId,
+                    "Cookie": f"Token={token}",
+                }
+                payload = json.dumps(send_data)
+                print("Start Backup Data")
+                try:
+                    res = requests.request(
+                        "POST", update_data_url, headers=headers, data=payload
+                    )
+                    self.__logger.info(
+                        f"Update aibox data : {res.status_code}")
+                    print(f"Update aibox data: {res.json()}")
+                except Exception as e:
+                    print(f"Exception update data: {e}")
+                    self.__logger.error(f"Exception update data: {e}")
+                    pass
+            except Exception as e:
+                print(f"Exception update data: {e}")
+                self.__logger.error(f"Exception update data: {e}")
+                pass
+        except Exception as e:
+            print(f"Exception update data: {e}")
+            self.__logger.error(f"Exception update data: {e}")
+            pass
+
+    def __handler_cmd_device_update_status(self, data):
+        if self.__globalVariables.AllowChangeCloudAccountFlag:
+            return
+        signal_data = []
+        try:
+            for d in data:
+                update_time = 0
+                for i in d["PROPERTIES"]:
+                    if i["ID"] == 165:
+                        update_time = i["VALUE"]
+                        continue
+                    data_send_to_cloud = {
+                        "deviceId": d["DEVICE_ID"],
+                        "deviceAttributeId": i["ID"],
+                        "value": i["VALUE"],
+                    }
+                    if update_time != 0:
+                        # Convert timestamp to datetime object with UTC timezone
+                        dt = datetime.fromtimestamp(update_time, timezone.utc)
+
+                        # Format the datetime object to ISO 8601 string with milliseconds
+                        iso8601_time = dt.isoformat()
+                        data_send_to_cloud["updatedAt"] = iso8601_time
+                    # print(data_send_to_cloud)
+                    signal_data.append(data_send_to_cloud)
+        except:
+            self.__logger.error("\nData Attached With Device CMD Invalid")
+            print("Data Attached With Device CMD Invalid")
+            return
+
+        if signal_data:
+            size_arr = const.SIZE_OF_FRAME_DATA
+            element = [
+                signal_data[i: i + size_arr]
+                for i in range(0, len(signal_data), size_arr)
+            ]
+
+            for i in range(len(element)):
+                send_data = [
+                    const.HC_UPDATE_DEVICE_STATUS,
                     json.dumps(element[i]),
                 ]
                 self.__signalr.send_response_data_queue.put(send_data)

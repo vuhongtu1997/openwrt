@@ -187,6 +187,7 @@ int main(int argc, char **argv)
 {
 	WriteIntoLog("", "HC reset factory");
 	UART_Init();
+	sleep(2);
 	puts("INIT UART DONE");
 	ResetAll();
 	puts("RESETALL DONE");

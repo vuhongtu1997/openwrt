@@ -62,7 +62,7 @@ def thread_6():
 
 def main():
     print("Service start! <---")
-    logger.info("Service start!")
+    logger.info("Cloud Service Start! Version 1.2.42 - Edited 2025-24-12 Merry Christmas")
     db.init()
     mqtt.connect()
 

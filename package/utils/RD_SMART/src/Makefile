@@ -14,6 +14,7 @@ LINKEDLIBS = -lpthread -lsqlite3 -lmosquitto -luci # Librarys to include in the 
 
 DEVICPPESRC += $(wildcard src/*.cpp)
 DEVICPPESRC += $(wildcard src/RD/*.cpp)
+DEVICESRC += $(wildcard src/RD/logging/*.c)
 DEVICPPESRC += $(wildcard src/RD/AHG/*.cpp)
 DEVICESRC += $(wildcard src/RD/RINGBUFFER/*.c)
 DEVICPPESRC += $(wildcard src/RD/AHG/JSON/*.cpp)
@@ -61,4 +62,3 @@ install: $(APP)
 
 clean: 
 	rm -rf $(APP) $(BUILD_PATH)
-

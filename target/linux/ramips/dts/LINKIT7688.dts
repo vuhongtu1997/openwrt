@@ -103,6 +103,11 @@
 			ralink,group = "wdt";
 			ralink,function = "gpio";
 		};
+
+		/*i2c {
+			ralink,group = "i2c";
+			ralink,function = "gpio";
+		};*/
 	};
 };
 
@@ -158,6 +163,7 @@
 
 &i2c {
 	status = "okay";
+	//status = "disabled";
 };
 
 &uart1 {

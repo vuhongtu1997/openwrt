@@ -1,24 +1,22 @@
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=sshrd
-PKG_VERSION:=1.0.1
+PKG_NAME:=smh
+PKG_VERSION:=2.0.0
 PKG_RELEASE:=1
 
 PKG_BUILD_DIR := $(BUILD_DIR)/$(PKG_NAME)
+export DEFINES = -D__OPENWRT__=1
 
 include $(INCLUDE_DIR)/package.mk
 
-export DEFINES = -D__OPENWRT__=1
-# export DEFINES = -DUSE_UCI=1
-
-define Package/sshrd
+define Package/smh
 	SECTION:=utils
 	CATEGORY:=Utilities
-	TITLE:=sshrd -- Rang Dong ssh 
-	DEPENDS:= +libuci libmosquitto-ssl +libmosquittopp
+	TITLE:=smh -- Rang Dong smarthome app
+	DEPENDS:= +libuci +libmosquittopp +lsqlite3 +libcurl
 endef
 
-define Package/sshrd/description
+define Package/smh/description
  If you can't figure out what this program does,
  you're probably brain-dead and need immediate
  medical attention.
@@ -29,11 +27,12 @@ define Build/Prepare
 	$(CP) ./src/* $(PKG_BUILD_DIR)/
 endef
 
-define Package/sshrd/install
+define Package/smh/install
 	$(INSTALL_DIR) $(1)/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/sshrd $(1)/bin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/smh $(1)/bin/
+	$(CP) ./files/smh.sqlite $(1)/
 	$(CP) ./files/etc $(1)/
 endef
 
-$(eval $(call BuildPackage,sshrd))
+$(eval $(call BuildPackage,smh))
 

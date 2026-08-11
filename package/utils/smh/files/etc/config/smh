@@ -1,0 +1,15 @@
+config server
+	option host 'mqtt.truesight.asia'
+	option port '1884'
+	option client_id 'hc-9c:65:f9:37:c2:83'
+	option username 'hc-9c:65:f9:37:c2:83'
+	option password 'ABC123456'
+	option keep_alive '10'
+
+config local
+	option host 'localhost'
+	option port '1883'
+	option client_id ''
+	option username 'RD'
+	option password '17180CE5EE30770D0916A85C3110800F5747D71D4FC5CAB9E99826C605653187'
+	option keep_alive '10'

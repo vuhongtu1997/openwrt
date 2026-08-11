@@ -2,8 +2,8 @@ HttpStatusCodeOk = 200
 
 # Cloud generic information
 
-# SERVER_HOST = "https://iot-dev.truesight.asia"
-# SERVER_SIGNALR_HOST = "https://iot-dev.truesight.asia"
+# SERVER_HOST = "210.211.96.129:8080"
+# SERVER_SIGNALR_HOST = "210.211.96.129:8080"
 
 # SERVER_HOST = "https://rallismartv2-staging.rangdong.com.vn"
 # SERVER_SIGNALR_HOST = "https://rallismartv2-staging.rangdong.com.vn"
@@ -22,6 +22,7 @@ SIGNALR_APP_DEVICE_RESPONSE_ENTITY = "DeviceResponse"
 SIGNALR_APP_ROOM_RESPONSE_ENTITY = "RoomResponse"
 SIGNALR_APP_SCENE_RESPONSE_ENTITY = "SceneResponse"
 SIGNALR_CLOUD_RESPONSE_ENTITY = "HC-DeviceAttributeValue"
+SIGNALR_APP_RULE_RESPONSE_ENTITY = "RuleResponse"
 SIGNALR_UPDATE_FIRMWARE_URL = "/rpc/iot-ebe/sync/hc/update-version"
 SIGNALR_ONLINE_ENTITY = "HC-Ping"
 SIGNALR_AUTO_UPDATE_FIRMWARE_ENTITY = "HC-PublishFirmware"
@@ -31,11 +32,14 @@ HC_UPDATE_DEVICE_LOG = "HC-DeviceActivityLog"
 HC_UPDATE_RULE_LOG = "HC-RuleActivationEventLog"
 HC_UPDATE_SCENE_LOG = "HC-SceneActivityLog"
 HC_UPDATE_GROUP_LOG = "HC-GroupActivityLog"
+HC_UPDATE_DEVICE_STATUS = "HC-DeviceStatus"
 # pull,push data url
 CLOUD_PUSH_DATA_URL = "/rpc/iot-ebe/sync/hc/merge-device-attribute-value"
 CLOUD_CHECK_FIRMWARE_URL = "/rpc/iot-ebe/firmware/list"
 CLOUD_CHECK_AUTO_UPDATE_URL = "/rpc/iot-ebe/firmware/get-latest"
 CLOUD_CHECK_AUTO_UPDATE_STATUS_URL = "/rpc/iot-ebe/home-controller/get"
+
+HC_UPDATE_AIBOX_NOTI = "/rpc/iot-ebe/aibox/callback"
 
 # Server connection option
 TOKEN_URL = "/rpc/iot-ebe/account/renew-token"

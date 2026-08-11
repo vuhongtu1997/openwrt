@@ -1015,42 +1015,44 @@ void ConnectToWifi()
 		sprintf(encryption, "uci set wireless.wifinet1.encryption='%s'", ENCRYPTION);
 		ExecuteCMD(encryption);
 		// ExecuteCMD("uci set wireless.default_radio0.mode='sta'");
+		ExecuteCMD("uci set wireless.default_radio0.disabled='1'");
 		ExecuteCMD("uci commit wireless");
 		ExecuteCMD("wifi");
-		sleep(30);
-		ip = GetIP();
-		cout << ip << endl;
-		if (strcmp(ip.c_str(), "10.10.10.1") == 0)
-		{
-			ExecuteCMD("uci del wireless.wifinet1");
-			ExecuteCMD("uci set wireless.wifinet1=wifi-iface");
-			// ExecuteCMD("uci set wireless.default_radio0.mode='ap'");
-			ExecuteCMD("uci commit wireless");
-			ExecuteCMD("uci commit network");
-			ExecuteCMD("wifi");
-			ExecuteCMD("/etc/init.d/network restart");
-		}
+		// sleep(30);
+		// ip = GetIP();
+		// cout << ip << endl;
+		// if (strcmp(ip.c_str(), "10.10.10.1") == 0)
+		// {
+		// 	ExecuteCMD("uci del wireless.wifinet1");
+		// 	ExecuteCMD("uci set wireless.wifinet1=wifi-iface");
+		// 	// ExecuteCMD("uci set wireless.default_radio0.mode='ap'");
+		// 	ExecuteCMD("uci commit wireless");
+		// 	ExecuteCMD("uci commit network");
+		// 	ExecuteCMD("wifi");
+		// 	ExecuteCMD("/etc/init.d/network restart");
+		// }
 	}
 	if (strcmp(ENCRYPTION, "none") != 0)
 	{
 		ExecuteCMD("uci set wireless.wifinet1.encryption='psk2'");
 		// ExecuteCMD("uci set wireless.default_radio0.mode='sta'");
+		ExecuteCMD("uci set wireless.default_radio0.disabled='1'");
 		ExecuteCMD("uci commit wireless");
-		ExecuteCMD("uci commit network");
+		ExecuteCMD("uci commit network");		
 		ExecuteCMD("wifi");
 		ExecuteCMD("/etc/init.d/network restart");
-		sleep(30);
-		ip = GetIP();
-		cout << ip << endl;
-		if (strcmp(ip.c_str(), "10.10.10.1") == 0)
-		{
-			ExecuteCMD("uci del wireless.wifinet1");
-			// ExecuteCMD("uci set wireless.default_radio0.mode='ap'");
-			ExecuteCMD("uci commit network");
-			ExecuteCMD("uci commit wireless");
-			ExecuteCMD("wifi");
-			ExecuteCMD("/etc/init.d/network restart");
-		}
+		// sleep(30);
+		// ip = GetIP();
+		// cout << ip << endl;
+		// if (strcmp(ip.c_str(), "10.10.10.1") == 0)
+		// {
+		// 	ExecuteCMD("uci del wireless.wifinet1");
+		// 	// ExecuteCMD("uci set wireless.default_radio0.mode='ap'");
+		// 	ExecuteCMD("uci commit network");
+		// 	ExecuteCMD("uci commit wireless");
+		// 	ExecuteCMD("wifi");
+		// 	ExecuteCMD("/etc/init.d/network restart");
+		// }
 	}
 }
 
